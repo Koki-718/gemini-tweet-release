@@ -1,0 +1,17 @@
+name: Test Gemini Tweet Action
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-action:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Test Gemini Tweet Action
+        uses: ./ # Uses the action from the current repository
+        with:
+          gemini_api_key: ${{ secrets.GEMINIAPIKEY }}
+          enable_image_generation: 'true'

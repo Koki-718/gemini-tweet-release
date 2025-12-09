@@ -1,6 +1,6 @@
 name: 'Gemini Auto Tweet'
 description: 'Generate structured release tweets with Gemini AI, including option for image generation.'
-author: 'Koki Fujimoto'
+author: 'Koki-718'
 branding:
   icon: 'twitter'
   color: 'blue'

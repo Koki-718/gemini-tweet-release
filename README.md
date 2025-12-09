@@ -33,7 +33,7 @@ jobs:
           fetch-depth: 2
       
       # このActionを使用
-      - uses: KokiFujimoto/gemini-tweet-release@main
+      - uses: Koki-718/gemini-tweet-release@main
         with:
           gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
           enable_image_generation: 'true' # 画像生成を有効にする場合
