@@ -23,9 +23,7 @@ runs:
 
     - name: Install Dependencies
       shell: bash
-      # Install packages to a temporary directory to avoid polluting the user's project
-      # However, for simplicity in composite actions, using npx with package installation is easiest
-      run: npm install -g tsx @google/generative-ai
+      run: cd ${{ github.action_path }} && npm install
 
     - name: Generate Tweet
       shell: bash
@@ -34,4 +32,4 @@ runs:
         ENABLE_IMAGE_GENERATION: ${{ inputs.enable_image_generation }}
         GITHUB_STEP_SUMMARY: ${{ github.step_summary }}
       # Run the script located in the action's repository
-      run: npx tsx ${{ github.action_path }}/scripts/main.ts
+      run: cd ${{ github.action_path }} && npx tsx scripts/main.ts
