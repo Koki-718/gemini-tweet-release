@@ -5,7 +5,6 @@ import * as path from 'path';
 import * as core from '@actions/core';
 
 // --- Configuration ---
-const ENABLE_IMAGE_GENERATION = core.getBooleanInput('enable_image_generation');
 let GEMINI_API_KEY = core.getInput('gemini_api_key');
 
 if (!GEMINI_API_KEY) {
@@ -19,45 +18,6 @@ if (!GEMINI_API_KEY) {
 }
 
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-
-async function generateImage(prompt: string): Promise<string | null> {
-    if (!ENABLE_IMAGE_GENERATION) return null;
-
-    console.log('🎨 Generating image with Imagen 3.0...');
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict?key=${GEMINI_API_KEY}`;
-
-    const body = {
-        instances: [{ prompt: prompt }],
-        parameters: { sampleCount: 1 }
-    };
-
-    try {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body)
-        });
-
-        if (!response.ok) {
-            console.warn(`⚠️ Image generation failed: ${response.status} ${response.statusText}`);
-            console.warn('Check if your API key supports Imagen 3.0 (beta).');
-            return null;
-        }
-
-        const data = await response.json();
-        // Assuming response format: { predictions: [ { bytesBase64Encoded: "..." } ] }
-        // Note: Actual response format for Gemini API Imagen might vary, adding basic check
-        const base64Image = data.predictions?.[0]?.bytesBase64Encoded || data.predictions?.[0]; // Adjust based on actual API
-
-        if (base64Image && typeof base64Image === 'string') {
-            return base64Image;
-        }
-        return null;
-    } catch (error) {
-        console.error('⚠️ Image generation error:', error);
-        return null;
-    }
-}
 
 async function main() {
     try {
@@ -99,28 +59,7 @@ async function main() {
         console.log('\n--- Generated Tweet ---');
         console.log(tweetText);
 
-        // 2. Generate Image (Optional)
-        let imagePath = null;
-        if (ENABLE_IMAGE_GENERATION) {
-            // Generate prompt for image based on tweet text
-            const imagePromptResult = await textModel.generateContent(`
-                以下のツイート内容を表す、技術的でクールな、または親しみやすいイメージ画像のプロンプト（英語）を作成してください。
-                Prompt only. No explanations.
-                
-                Tweet: ${tweetText}
-            `);
-            const imagePrompt = imagePromptResult.response.text().trim();
-            console.log(`\nGenerated Image Prompt: ${imagePrompt}`);
-
-            const base64Image = await generateImage(imagePrompt + ", high quality, 4k, tech style");
-            if (base64Image) {
-                imagePath = 'generated-image.png';
-                fs.writeFileSync(imagePath, Buffer.from(base64Image, 'base64'));
-                console.log(`✅ Image saved to ${imagePath}`);
-            }
-        }
-
-        // 3. Output (Intent URL & Summary)
+        // 2. Output (Intent URL & Summary)
         const encodedText = encodeURIComponent(tweetText);
         const intentUrl = `https://twitter.com/intent/tweet?text=${encodedText}`;
 
@@ -136,23 +75,9 @@ Gemini has created a tweet for commit \`${commitHash}\`.
 ### 👇 Action
 [**Post to Twitter (Text Only)**](${intentUrl})
 `;
-            if (imagePath) {
-                summary += `
-### 🖼️ Generated Image
-An image has been generated! Check the **Artifacts** section of this workflow run to download \`generated-image.png\`.
-*(Note: Twitter Intent URL does not support automatic image attachment. You must manually attach the downloaded image.)*
-`;
-            } else if (ENABLE_IMAGE_GENERATION) {
-                summary += `
-### 🖼️ Image Generation
-Image generation was enabled but failed (or returned no data). Check logs for details.
-`;
-            }
-
             fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, summary);
         } else {
             console.log(`\nTweet URL: ${intentUrl}`);
-            if (imagePath) console.log(`Image saved: ${imagePath}`);
         }
 
     } catch (error) {

@@ -8,10 +8,7 @@ inputs:
   gemini_api_key:
     description: 'Google Gemini API Key'
     required: false
-  enable_image_generation:
-    description: 'Enable AI image generation (Imagen)'
-    required: false
-    default: 'false'
+
 
 runs:
   using: 'node20'
