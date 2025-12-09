@@ -1,0 +1,27 @@
+{
+    "name": "gemini-tweet-release",
+    "version": "1.0.0",
+    "description": "Auto-generate structured release tweets with images using Gemini API",
+    "main": "scripts/main.ts",
+    "scripts": {
+        "tweet": "tsx scripts/main.ts",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+        "gemini",
+        "twitter",
+        "auto-tweet",
+        "release-notes",
+        "github-actions"
+    ],
+    "author": "",
+    "license": "MIT",
+    "dependencies": {
+        "@google/generative-ai": "^0.21.0",
+        "tsx": "^4.19.0"
+    },
+    "devDependencies": {
+        "@types/node": "^20.14.0",
+        "typescript": "^5.4.0"
+    }
+}

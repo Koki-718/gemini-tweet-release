@@ -1,0 +1,37 @@
+name: 'Gemini Auto Tweet'
+description: 'Generate structured release tweets with Gemini AI, including option for image generation.'
+author: 'Koki Fujimoto'
+branding:
+  icon: 'twitter'
+  color: 'blue'
+inputs:
+  gemini_api_key:
+    description: 'Google Gemini API Key'
+    required: true
+  enable_image_generation:
+    description: 'Enable AI image generation (Imagen)'
+    required: false
+    default: 'false'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install Dependencies
+      shell: bash
+      # Install packages to a temporary directory to avoid polluting the user's project
+      # However, for simplicity in composite actions, using npx with package installation is easiest
+      run: npm install -g tsx @google/generative-ai
+
+    - name: Generate Tweet
+      shell: bash
+      env:
+        GEMINI_API_KEY: ${{ inputs.gemini_api_key }}
+        ENABLE_IMAGE_GENERATION: ${{ inputs.enable_image_generation }}
+        GITHUB_STEP_SUMMARY: ${{ github.step_summary }}
+      # Run the script located in the action's repository
+      run: npx tsx ${{ github.action_path }}/scripts/main.ts
