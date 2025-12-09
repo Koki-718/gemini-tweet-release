@@ -2,30 +2,11 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as core from '@actions/core';
 
 // --- Configuration ---
-const ENABLE_IMAGE_GENERATION = process.env.ENABLE_IMAGE_GENERATION === 'true'; // Set 'true' in GitHub Secrets/Vars to enable
-// ---------------------
-
-// Load environment variables locally
-if (!process.env.CI) {
-    const envPath = path.resolve(process.cwd(), '.env');
-    if (fs.existsSync(envPath)) {
-        const envConfig = fs.readFileSync(envPath, 'utf-8');
-        envConfig.split('\n').forEach((line) => {
-            const [key, value] = line.split('=');
-            if (key && value) {
-                process.env[key.trim()] = value.trim();
-            }
-        });
-    }
-}
-
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-if (!GEMINI_API_KEY) {
-    console.error('Error: GEMINI_API_KEY is not set');
-    process.exit(1);
-}
+const ENABLE_IMAGE_GENERATION = core.getBooleanInput('enable_image_generation');
+const GEMINI_API_KEY = core.getInput('gemini_api_key', { required: true });
 
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 
