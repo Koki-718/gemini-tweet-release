@@ -27328,7 +27328,15 @@ const fs = __importStar(__nccwpck_require__(9896));
 const core = __importStar(__nccwpck_require__(7484));
 // --- Configuration ---
 const ENABLE_IMAGE_GENERATION = core.getBooleanInput('enable_image_generation');
-const GEMINI_API_KEY = core.getInput('gemini_api_key', { required: true });
+let GEMINI_API_KEY = core.getInput('gemini_api_key');
+if (!GEMINI_API_KEY) {
+    // Fallback: try reading from env var directly (sometimes helpful in weird contexts, though inputs are standard)
+    GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
+}
+if (!GEMINI_API_KEY) {
+    core.setFailed('Error: GEMINI_API_KEY input is missing or empty. Please ensure the secret is set in Settings > Secrets and Variables > Actions.');
+    process.exit(1);
+}
 const genAI = new generative_ai_1.GoogleGenerativeAI(GEMINI_API_KEY);
 async function generateImage(prompt) {
     if (!ENABLE_IMAGE_GENERATION)
