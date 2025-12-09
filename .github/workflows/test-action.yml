@@ -1,4 +1,4 @@
-name: Test Gemini Tweet Action
+name: Gemini Tweet Release
 
 on:
   workflow_dispatch:
@@ -10,7 +10,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Gemini Tweet Create
+      - name: Gemini Tweet Release
         uses: ./ # Uses the action from the current repository
         with:
           gemini_api_key: ${{ secrets.GEMINI_API_KEY }}

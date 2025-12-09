@@ -1,4 +1,4 @@
-name: 'Gemini Auto Tweet'
+name: 'Gemini Tweet Release'
 description: 'Generate structured release tweets with Gemini AI, including option for image generation.'
 author: 'Koki-718'
 branding:
