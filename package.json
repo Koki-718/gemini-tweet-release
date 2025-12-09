@@ -5,6 +5,7 @@
     "main": "scripts/main.ts",
     "scripts": {
         "tweet": "tsx scripts/main.ts",
+        "build": "ncc build scripts/main.ts -o dist",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "keywords": [
@@ -22,6 +23,7 @@
     },
     "devDependencies": {
         "@types/node": "^20.14.0",
+        "@vercel/ncc": "^0.38.4",
         "typescript": "^5.4.0"
     }
 }
